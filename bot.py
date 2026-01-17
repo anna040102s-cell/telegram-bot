@@ -15,9 +15,9 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Конфігурація (через змінні оточення для безпеки)
-TOKEN = os.getenv("BOT_TOKEN")  # Встановити в Railway
-ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))  # Встановити в Railway
+# Конфігурація 
+TOKEN = os.getenv("BOT_TOKEN") 
+ADMIN_ID = int(os.getenv("ADMIN_ID", "0"))  
 PARSE_URL = "http://mbk.mk.ua/?page_id=17254"
 DEFAULT_NOTIFICATION_TIME = time(8, 0, 0)
 TIMEZONE = pytz.timezone('Europe/Kiev')
@@ -31,7 +31,7 @@ if ADMIN_ID == 0:
 # Доступні групи
 GROUPS = ["Б-101", "Д-103", "Д-104", "БМ-106", "КН-107"]
 
-# Зберігання даних користувачів: {user_id: {"group": "КН-107", "time": time(8,0,0)}}
+# Зберігання даних користувачів
 user_data = {}
 
 # Стани для ConversationHandler
@@ -62,8 +62,7 @@ async def parse_replacements(target_group):
         
         soup = BeautifulSoup(html, 'html.parser')
         today = datetime.now(TIMEZONE)
-        
-        # Українські назви місяців
+    
         months_uk = {
             1: "січня", 2: "лютого", 3: "березня", 4: "квітня",
             5: "травня", 6: "червня", 7: "липня", 8: "серпня",
@@ -91,7 +90,7 @@ async def parse_replacements(target_group):
             logger.info(f"✅ Знайдено елемент з датою!")
             logger.info(f"📍 Текст елемента: {str(date_element)[:150]}")
             
-            # Шукаємо таблицю ПІСЛЯ (НИЖЧЕ) цього елемента
+            # Шукаємо таблицю після цього елемента
             target_table = date_element.find_next('table')
             
             if not target_table:
@@ -114,7 +113,7 @@ async def parse_replacements(target_group):
                 group_text = cells[0].get_text(strip=True)
                 pair_num = cells[1].get_text(strip=True)
                 
-                # Логуємо ВСІ рядки
+                # Логуємо всі рядки
                 logger.info(f"Рядок {row_idx}: '{group_text}' | Пара: '{pair_num}'")
                 
                 # Пропускаємо заголовки
@@ -122,7 +121,7 @@ async def parse_replacements(target_group):
                     logger.info(f"  ⏭️ Пропускаємо (заголовок)")
                     continue
                 
-                # ПЕРЕВІРЯЄМО групу
+                # перевіряємо групу
                 if target_group == group_text:
                     logger.info(f"  ✅✅✅ ТОЧНЕ СПІВПАДІННЯ!")
                     
@@ -599,4 +598,5 @@ def main():
 
 
 if __name__ == '__main__':
+
     main()
